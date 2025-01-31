@@ -1,0 +1,3 @@
+needed to up docker container for Redis:
+        docker run --name redis-cache -d -p 6379:6379 redis
+needed to up docker container for RabbitMQ:
