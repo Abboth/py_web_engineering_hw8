@@ -4,27 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dd7fddcd-ff74-4442-a38f-e56e5d928842" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/py_engineering_hw8.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config.ini" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data_selects/find.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data_to_database/authors.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data_to_database/quotes.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/html/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/models/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mongo_data_handler.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/newsletter/models.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/newsletter/newletter_script.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/statics/script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/statics/styles.css" afterDir="false" />
+    <list default="true" id="dd7fddcd-ff74-4442-a38f-e56e5d928842" name="Changes" comment="finished with mangoDB fulfilling and fetching data&#10;start of working with newsletter">
+      <change afterPath="$PROJECT_DIR$/newsletter/consumer_email.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/newsletter/consumer_sms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/newsletter/producer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/newsletter/seeds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README" beforeDir="false" afterPath="$PROJECT_DIR$/README" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data_selects/find.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_selects/find.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mongo_data_handler.py" beforeDir="false" afterPath="$PROJECT_DIR$/data_processing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/newsletter/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/newsletter/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +34,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Abboth"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Abboth/py_web_engineering_hw8.git",
+    "accountId": "00d1d1b7-22b6-4b75-b921-9c29a39b3079"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -51,14 +55,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "Python.main.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "master",
+    "run.code.analysis.last.selected.profile": "aDefault"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\alexm\PycharmProjects\py_engineering_hw8" />
@@ -82,6 +87,27 @@
       <option name="presentableId" value="Default" />
       <updated>1738233001384</updated>
     </task>
+    <task id="LOCAL-00001" summary="finished with mangoDB fulfilling and fetching data&#10;start of working with newsletter">
+      <option name="closed" value="true" />
+      <created>1738331179418</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1738331179418</updated>
+    </task>
+    <task id="LOCAL-00002" summary="finished with mangoDB fulfilling and fetching data&#10;start of working with newsletter">
+      <option name="closed" value="true" />
+      <created>1738331201344</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1738331201344</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="finished with mangoDB fulfilling and fetching data&#10;start of working with newsletter" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished with mangoDB fulfilling and fetching data&#10;start of working with newsletter" />
   </component>
 </project>

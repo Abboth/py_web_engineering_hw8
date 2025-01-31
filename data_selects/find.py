@@ -1,8 +1,9 @@
 import logging
 import redis
 
+
 from redis_lru import RedisLRU
-from mongo_data_handler import db
+from data_processing import db
 from pymongo import errors
 
 client = redis.StrictRedis(host="localhost", port=6379, password=None)
@@ -10,7 +11,7 @@ cache = RedisLRU(client)
 
 
 @cache
-def find_in_documents(col: str, obj: dict) -> str:
+def find_in_documents(col: str, obj: dict) -> bytes:
     """Searching for data in database documents
     with using regex matching"""
     try:
@@ -24,6 +25,6 @@ def find_in_documents(col: str, obj: dict) -> str:
             for key in doc_keys:
                 result += f"{key}: {doc.get(key)}\n"
         logging.info("Fetching data successfully") if result else None
-        return result
+        return result.encode("utf-8")
     except errors.PyMongoError as err:
         logging.error(f"Error while searching for data{err}")

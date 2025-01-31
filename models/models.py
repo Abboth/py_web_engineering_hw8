@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, ListField, ReferenceField, connect
+from mongoengine import Document, StringField, ListField, ReferenceField
 
 
 class Author(Document):
