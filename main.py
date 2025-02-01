@@ -20,10 +20,6 @@ class HttpHandler(BaseHTTPRequestHandler):
         match route.path:
             case "/" | "/index.html":
                 self.send_html_file("index.html")
-            case "/message.html":
-                self.send_html_file("message.html")
-            case "/message_successfully.html":
-                self.send_html_file("message_successfully.html")
             case _:
                 file = BASE_DIR.joinpath(route.path[1:])
                 if file.exists():
@@ -31,10 +27,21 @@ class HttpHandler(BaseHTTPRequestHandler):
                 else:
                     self.send_html_file("error.html", status=404)
 
+    def do_POST(self):
+        data = self.rfile.read(self.headers["Content-Length"])
+
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        client_socket.sendto(data, (SOCKET_HOST, SOCKET_PORT))
+        client_socket.close()
+
+        self.send_response(303)
+        self.send_header("Здесь результат поиска?")
+        self.end_headers()
+
     def send_html_file(self, filename, status=200):
         html_path = Path("templates") / filename
         self.send_response(status)
-        self.send_header("Content-Type", "text/html")
+        self.send_header("Content-Type", "text/templates")
         self.end_headers()
         with open(html_path, "r", encoding="utf-8") as f:
             self.wfile.write(f.read().encode())
@@ -51,3 +58,31 @@ class HttpHandler(BaseHTTPRequestHandler):
         self.end_headers()
         with open(static_path, "rb") as file:
             self.wfile.write(file.read())
+
+
+def up_http(host, port):
+    address = (host, port)
+    server = HTTPServer(address, HttpHandler)  # type: ignore
+    logging.info(f"HTTP server started at {address}")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt as e:
+        server.server_close()
+        logging.error(f"error while serving: {e}")
+
+
+def up_socket(host: str, port: int) -> None:
+    address = (host, port)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.bind(address)
+    logging.info(f"Socket server started at {address}")
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG, format="%(threadName)s %(message)s")
+
+    th_socket = Thread(target=up_socket, args=(SOCKET_HOST, SOCKET_PORT))
+    th_http = Thread(target=up_http, args=(HTTP_HOST, HTTP_PORT))
+    th_socket.start()
+    th_http.start()
+
