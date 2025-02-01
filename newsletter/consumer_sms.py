@@ -3,7 +3,6 @@ import pika
 import logging
 
 from newsletter.conf.database import client, connect
-from mongoengine import connect
 from newsletter.models import Newsletter, UserContact
 
 logging.basicConfig(level=logging.INFO)

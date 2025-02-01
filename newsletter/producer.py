@@ -6,8 +6,6 @@ from newsletter.conf.database import client, connect
 from newsletter.models import User, UserContact
 from newsletter.seeds import insert_users
 
-db = client["newsletter"]
-collection = db["users"]
 
 credentials = pika.PlainCredentials("guest", "guest")
 params = pika.ConnectionParameters(host="localhost", port=5672, credentials=credentials)
@@ -75,5 +73,5 @@ def producer():
 
 
 if __name__ == "__main__":
-    #insert_users(15)
+    insert_users(15)
     producer()

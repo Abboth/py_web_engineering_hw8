@@ -11,8 +11,11 @@ credentials = pika.PlainCredentials("guest", "guest")
 params = pika.ConnectionParameters(host="localhost", port=5672, credentials=credentials)
 connection = pika.BlockingConnection(params)
 
+
 channel = connection.channel()
 channel.queue_declare(queue="email_queue", durable=True)
+channel.exchange_declare(exchange="email_newsletter", exchange_type="direct")
+channel.queue_bind(exchange="email_newsletter", queue="email_queue")
 logging.info("Waiting for email for producer...")
 
 

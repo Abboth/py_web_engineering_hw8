@@ -1,24 +1,12 @@
-import configparser
 import logging
 import json
 
+from conf.database import client, connect
 from models.models import Author, Quote
-from pymongo import MongoClient, errors
-from pymongo.server_api import ServerApi
+from pymongo import errors
 from pathlib import Path
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-mongo_user = config.get("DB", "USER")
-mongo_password = config.get("DB", "PWD")
-mongo_db = config.get("DB", "DB_NAME")
-mongo_domain = config.get("DB", "DOMAIN")
-
-client = MongoClient(f"mongodb+srv://{mongo_user}:{mongo_password}@{mongo_domain}"
-                     f"?retryWrites=true&w=majority&appName={mongo_db}", server_api=ServerApi('1'))
-db = client["simple_web"]
-
+db = client["quotes"]
 logging.basicConfig(level=logging.INFO)
 
 
@@ -38,7 +26,7 @@ def json_data_processing(file_name: str, data_from_json: dict):
     """processing data from json file
     take dict to upload to Mongo"""
     try:
-        if not isinstance(data_from_json, (dict, list[dict])):
+        if not isinstance(data_from_json, (dict, list)):
             raise TypeError("Data must be dict or list of dicts")
         name = file_name.replace(" ", "_")
         insert_data_to_mongo(name, data_from_json)
@@ -79,3 +67,10 @@ def insert_data_to_mongo(collection_name: str, data: dict) -> None:
 
     except errors.PyMongoError as err:
         logging.error(f"Error with inserting data to Mongo, {err}")
+
+
+if __name__ == "__main__":
+    authors = Path("data_to_database/authors.json")
+    quotes = Path("data_to_database/quotes.json")
+    get_data_from_json(authors)
+    get_data_from_json(quotes)
