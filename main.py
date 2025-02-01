@@ -20,6 +20,8 @@ class HttpHandler(BaseHTTPRequestHandler):
         match route.path:
             case "/" | "/index.html":
                 self.send_html_file("index.html")
+            case "/search":  # 🔥 Добавляем обработку запроса
+                self.handle_search(route)
             case _:
                 file = BASE_DIR.joinpath(route.path[1:])
                 if file.exists():
@@ -27,16 +29,45 @@ class HttpHandler(BaseHTTPRequestHandler):
                 else:
                     self.send_html_file("error.html", status=404)
 
+    def handle_search(self, route):
+        query_params = urllib.parse.parse_qs(route.query)
+        search_query = query_params.get("query", [""])[0]
+
+        if not search_query:
+            self.send_response(400)
+            self.end_headers()
+            self.wfile.write(b"Missing query parameter")
+            return
+
+        # Отправляем запрос на сокет-сервер
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((SOCKET_HOST, SOCKET_PORT))
+        client_socket.sendall(search_query.encode())
+
+        # Получаем ответ
+        response_data = client_socket.recv(BUFFER_SIZE).decode()
+        client_socket.close()
+
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(response_data.encode())
+
     def do_POST(self):
         data = self.rfile.read(self.headers["Content-Length"])
 
-        client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        client_socket.sendto(data, (SOCKET_HOST, SOCKET_PORT))
+        client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        client_socket.connect((SOCKET_HOST, SOCKET_PORT))
+        client_socket.sendall(data)
+
+        response_data = client_socket.recv(BUFFER_SIZE)
+
         client_socket.close()
 
-        self.send_response(303)
-        self.send_header("Здесь результат поиска?")
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
         self.end_headers()
+        self.wfile.write(response_data)
 
     def send_html_file(self, filename, status=200):
         html_path = Path("templates") / filename

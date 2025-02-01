@@ -15,10 +15,20 @@
         <h1>Quotes Search</h1>
     </header>
     <div class="container">
+        <!-- Блок для отображения ошибок -->
+        <div id="error-container" class="error-container" style="display: none;">
+            <h2 id="error-title">Error</h2>
+            <p id="error-message">An error occurred. Please try again later.</p>
+            <p>Return to the <a href="/">homepage</a>.</p>
+        </div>
+
+        <!-- Поисковая строка -->
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Enter name or tag...">
             <button id="searchButton">Search</button>
         </div>
+
+        <!-- Блок для результатов -->
         <div id="results"></div>
     </div>
     <script src="/statics/script.js"></script>

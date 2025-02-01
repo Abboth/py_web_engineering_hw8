@@ -9,17 +9,17 @@ def echo_server(host: str, port: int) -> None:
     server = host, port
     sock.bind(server)
     sock.listen()
-    conn, addr = sock.accept()
 
     logging.info(f"Echo Server started on {host}:{port}")
     try:
         while True:
-            data = conn.recv(1024)
-            parsed_data = find_in_documents(data)
-            logging.info(f"Received POST request: {parsed_data}")
-            msg = input(">>> ")
-            conn.send(msg.encode())
-            sock.sendto(data, addr)
+            conn, addr = sock.accept()
+            with conn:
+                data = conn.recv(1024)
+                if not data:
+                    continue
+                parsed_data = find_in_documents(data)
+                conn.send(parsed_data.encode())
 
     except KeyboardInterrupt:
         logging.info(f"Echo Server stopped")
