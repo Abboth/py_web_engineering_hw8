@@ -1,9 +1,9 @@
-from mongoengine import StringField, BooleanField, Document, ReferenceField
+from mongoengine import StringField, BooleanField, Document, ReferenceField, IntField
 
 
 class User(Document):
     name = StringField(required=True)
-    age = StringField()
+    age = IntField()
 
 
 class UserContact(Document):

@@ -1,10 +1,9 @@
 import pika
 import logging
+import json
 
-from data_processing import client
+from newsletter.conf.database import client, connect
 from newsletter.models import User, UserContact
-from newsletter.consumer_sms import sms_consumer
-from newsletter.consumer_email import email_consumer
 from newsletter.seeds import insert_users
 
 db = client["newsletter"]
@@ -13,8 +12,8 @@ collection = db["users"]
 credentials = pika.PlainCredentials("guest", "guest")
 params = pika.ConnectionParameters(host="localhost", port=5672, credentials=credentials)
 connection = pika.BlockingConnection(params)
-email_channel = connection.channel()
 
+email_channel = connection.channel()
 email_channel.queue_declare(queue="email_queue", durable=True)
 email_channel.exchange_declare(exchange="email_newsletter", exchange_type="direct")
 email_channel.queue_bind(exchange="email_newsletter", queue="email_queue")
@@ -39,38 +38,42 @@ def producer():
             logging.warning("Didn't find contact data for this user")
             continue
 
-        for method in contact.contact_method_priority:
-            if method in methods:
-                contact_method = methods[method]
-                message = {f"{method}": contact_method,
-                           "user_id": str(user.id)}
-                exchange = None
-                routing_key = None
-                match method:
-                    case "phone":
-                        exchange = "sms_newsletter"
-                        routing_key = "sms_queue"
-                    case "email":
-                        exchange = "email_newsletter"
-                        routing_key = "email_queue"
+        method = contact.contact_method_priority
+        if method in methods:
+            contact_method = getattr(contact, method)
+            message = {f"{method}": contact_method,
+                       "user_id": str(user.id)}
+            logging.debug(f"sending {message}")
 
-                contact_method.basic_publish(
-                    exchange=exchange,
-                    routing_key=routing_key,
-                    body=str(message),
-                    properties=pika.BasicProperties(
-                        delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
-                    ))
-                logging.info(f"queue added for {contact_method}")
+            exchange = None
+            routing_key = None
+            channel = None
 
-            else:
-                logging.warning(f"contact doesn't want to get newsletters")
+            match method:
+                case "phone":
+                    exchange = "sms_newsletter"
+                    routing_key = "sms_queue"
+                    channel = sms_channel
+                case "email":
+                    channel = email_channel
+                    exchange = "email_newsletter"
+                    routing_key = "email_queue"
+
+            channel.basic_publish(
+                exchange=exchange,
+                routing_key=routing_key,
+                body=json.dumps(message).encode(),
+                properties=pika.BasicProperties(
+                    delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
+                ))
+            logging.info(f"queue added for {contact_method}")
+
+        else:
+            logging.warning(f"contact doesn't want to get newsletters")
 
     connection.close()
 
 
 if __name__ == "__main__":
-    insert_users(15)
+    #insert_users(15)
     producer()
-    sms_consumer()
-    email_consumer()
